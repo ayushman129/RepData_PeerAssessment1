@@ -8,7 +8,7 @@ keep_md: yes
 
 ## Loading and preprocessing the data
 
-```r
+``` r
 #load packages:
 library(ggplot2)
 library(ggthemes)
@@ -20,19 +20,18 @@ activity <- cbind(activity, day)
 summary(activity)
 ```
 
-```
-##      steps             date               interval          day           
-##  Min.   :  0.00   Min.   :2012-10-01   Min.   :   0.0   Length:17568      
-##  1st Qu.:  0.00   1st Qu.:2012-10-16   1st Qu.: 588.8   Class :character  
-##  Median :  0.00   Median :2012-10-31   Median :1177.5   Mode  :character  
-##  Mean   : 37.38   Mean   :2012-10-31   Mean   :1177.5                     
-##  3rd Qu.: 12.00   3rd Qu.:2012-11-15   3rd Qu.:1766.2                     
-##  Max.   :806.00   Max.   :2012-11-30   Max.   :2355.0                     
-##  NA's   :2304
-```
+    ##      steps             date               interval          day           
+    ##  Min.   :  0.00   Min.   :2012-10-01   Min.   :   0.0   Length:17568      
+    ##  1st Qu.:  0.00   1st Qu.:2012-10-16   1st Qu.: 588.8   Class :character  
+    ##  Median :  0.00   Median :2012-10-31   Median :1177.5   Mode  :character  
+    ##  Mean   : 37.38   Mean   :2012-10-31   Mean   :1177.5                     
+    ##  3rd Qu.: 12.00   3rd Qu.:2012-11-15   3rd Qu.:1766.2                     
+    ##  Max.   :806.00   Max.   :2012-11-30   Max.   :2355.0                     
+    ##  NA's   :2304
+
 ## What is mean total number of steps taken per day?
 
-```r
+``` r
 activityTotalSteps <- with(activity, aggregate(steps, by = list(date), sum, na.rm = TRUE))
 names(activityTotalSteps) <- c("Date", "Steps")
 totalStepsdf <- data.frame(activityTotalSteps)
@@ -47,26 +46,23 @@ g <- ggplot(totalStepsdf, aes(x = Steps)) +
 print(g)
 ```
 
-![plot of chunk meanStepsPerDay](figures meanStepsPerDay-1.png)
+![plot of chunk meanStepsPerDay](figures%20meanStepsPerDay-1.png)
 
-```r
+``` r
 mean(activityTotalSteps$Steps)
 ```
 
-```
-## [1] 9354.23
-```
+    ## [1] 9354.23
 
-```r
+``` r
 median(activityTotalSteps$Steps)
 ```
 
-```
-## [1] 10395
-```
+    ## [1] 10395
+
 ## What is the average daily activity pattern?
 
-```r
+``` r
 # Calculating the average number of steps taken, 
 #averaged across all days by 5-min intervals.
 averageDailyActivity <- aggregate(activity$steps, by = list(activity$interval), 
@@ -83,29 +79,26 @@ da <- ggplot(averageActivitydf, mapping = aes(Interval, Mean)) +
 print(da)
 ```
 
-![plot of chunk AvgDailyActivity](figures AvgDailyActivity-1.png)
+![plot of chunk AvgDailyActivity](figures%20AvgDailyActivity-1.png)
 
-```r
+``` r
 #Which 5-minute interval, on average across all the days in the dataset, 
 #contains the maximum number of steps?
 averageDailyActivity[which.max(averageDailyActivity$Mean), ]$Interval
 ```
 
-```
-## [1] 835
-```
+    ## [1] 835
+
 ## Imputing missing values
 
-```r
+``` r
 # report the total number of rows with NAs.
 sum(is.na(activity$steps))
 ```
 
-```
-## [1] 2304
-```
+    ## [1] 2304
 
-```r
+``` r
 imputedSteps <- averageDailyActivity$Mean[match(activity$interval, averageDailyActivity$Interval)]
 activityImputed <- transform(activity, steps = ifelse(is.na(activity$steps), 
 yes = imputedSteps, no = activity$steps))
@@ -116,11 +109,9 @@ names(totalActivityImputed) <- c("date", "dailySteps")
 sum(is.na(totalActivityImputed$dailySteps))
 ```
 
-```
-## [1] 0
-```
+    ## [1] 0
 
-```r
+``` r
 totalImputedStepsdf <- data.frame(totalActivityImputed)
 # Plot the histogram using ggplot2
 p <- ggplot(totalImputedStepsdf, aes(x = dailySteps)) + 
@@ -133,28 +124,25 @@ p <- ggplot(totalImputedStepsdf, aes(x = dailySteps)) +
 print(p)
 ```
 
-![plot of chunk ImputingNAs](figures ImputingNAs-1.png)
+![plot of chunk ImputingNAs](figures%20ImputingNAs-1.png)
 
-```r
+``` r
 #mean of the total number of steps taken per day is:
 mean(totalActivityImputed$dailySteps)
 ```
 
-```
-## [1] 10766.19
-```
+    ## [1] 10766.19
 
-```r
+``` r
 #median of the total number of steps taken per day is:
 median(totalActivityImputed$dailySteps)
 ```
 
-```
-## [1] 10766.19
-```
+    ## [1] 10766.19
+
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```r
+``` r
 activity$date <- as.Date(strptime(activity$date, format="%Y-%m-%d"))
 # Making a function which differentiates weekdays from weekends
 activity$dayType <- sapply(activity$date, function(x) {
@@ -175,4 +163,4 @@ dayPlot <-  ggplot(activityByDay, aes(x = interval , y = steps, color = dayType)
 print(dayPlot)
 ```
 
-![plot of chunk WeekdayWeekend](figures WeekdayWeekend-1.png)
+![plot of chunk WeekdayWeekend](figures%20WeekdayWeekend-1.png)
